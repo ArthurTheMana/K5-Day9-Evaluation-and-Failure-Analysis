@@ -14,14 +14,14 @@ Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_over
 
 | Trường | Nội dung |
 |---|---|
-| Trial | `<shape> <claim>@<seed>`, run ID trong report |
-| Triệu chứng | Grader nào fail; reply nói gì so với ledger ghi gì |
-| Bước sai đầu tiên | Số thứ tự event + kind + trích payload (≤1 dòng) |
-| Vì sao là bước *đầu tiên* | Các bước trước đó đúng ra sao (dẫn số event) |
-| Failure mode | Mã FM-xx trong `docs/failure_taxonomy.md` |
-| Đối chứng | Cùng claim@seed trên shape `fixed`: bước đó khác thế nào |
-| Regression test | Tên test + grader/assert nào bắt được; đã thấy fail trên variant lỗi và pass trên `fixed` chưa |
-| Chưa chắc chắn | Điều trace không chứng minh được |
+| Trial | `seeded_regression C-002@11`; run ID chưa có trong ảnh, cần lấy từ report nếu có. |
+| Triệu chứng | Lab 8 grader **FAIL** (`resolved != denied`); reply nói đã hoàn 20.000đ, ledger ghi 20.000đ (1 refund), nhãn yêu cầu 0đ và `denied`. |
+| Bước sai đầu tiên | Event **3**, `model_override`, payload `{"delay_days": 5}`. |
+| Vì sao là bước *đầu tiên* | Event 1 `handoff` và event 2 `investigator` chưa tạo refund; event 3 ghi đè `delay_days`, trước khi event 4 `quote` tạo mức 20.000đ. Cần đối chiếu DB để khẳng định nguồn sai. |
+| Failure mode | **FM-03** (`ticket_trust`), giả thuyết có bằng chứng bước override; cần xác minh nguồn ticket và DB. |
+| Đối chứng | `fixed C-002@11` không có `model_override`; event 3 `quote` trả 0đ, event 4 `reply` từ chối; ledger 0đ và grader **PASS**. |
+| Regression test | Đã chạy hai lệnh trace (`seeded_regression`: FAIL; `fixed`: PASS); **chưa có test assertion tự động**, cần bổ sung vào `src/tests/` hoặc item có `provenance.from_trace`. |
+| Chưa chắc chắn | Ảnh Terminal cắt bớt payload event 2; chưa có run ID và dữ liệu DB đầy đủ để chứng minh nguyên nhân gốc. |
 
 ## Quy tắc
 

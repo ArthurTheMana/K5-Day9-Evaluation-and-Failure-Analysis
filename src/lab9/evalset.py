@@ -38,6 +38,24 @@ def sha12(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
 
+# M1 coverage mapping based on the public claim scenarios and business rules.
+# These are modes each item should EXERCISE, not a claim that the reference Agent failed.
+# Validate anchor tags against actual traces before submitting.
+FAILURE_MODE_COVERAGE_V1 = {'C-001': ['FM-01'],
+    'C-002': ['FM-03'],
+    'C-003': ['FM-04'],
+    'C-004': ['FM-03'],
+    'C-005': ['FM-01'],
+    'C-006': ['FM-06'],
+    'C-007': ['FM-02'],
+    'C-008': ['FM-08'],
+    'C-009': ['FM-03'],
+    'C-010': ['FM-01'],
+    'C-011': ['FM-07'],
+    'C-012': ['FM-07'],
+    'C-013': ['FM-05'],
+    'C-014': ['FM-05', 'FM-08', 'FM-04']}
+
 def build(source: Path = SOURCE) -> tuple[int, int]:
     claims = load_jsonl(source)
     items, labels = [], {}
@@ -47,7 +65,7 @@ def build(source: Path = SOURCE) -> tuple[int, int]:
             "item_id": item_id,
             "claim_id": claim["claim_id"],
             # TODO M1: replace [] with the FM-xx codes from your taxonomy that this item exercises.
-            "failure_modes": [],
+            "failure_modes": FAILURE_MODE_COVERAGE_V1.get(claim["claim_id"], []),
             "provenance": {"source": "lab8_public", "matrix_id": claim.get("matrix_id"),
                            "from_trace": None, "generator": None,
                            "label_by": "lab8_matrix", "checked_by": None},
