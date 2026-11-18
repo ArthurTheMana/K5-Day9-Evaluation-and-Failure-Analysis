@@ -87,7 +87,22 @@ class ReplyLedgerConsistent(Evaluator[Any, Trial]):
         replies = [e.get("payload", {}).get("text", "") for e in ctx.output["events"]
                    if e.get("kind") == "reply"]
         if not replies:
-            return EvaluationReason(value=False, reason="reply event missing")
+            # Some Lab 8 shapes (including swarm) return a structured RunResult
+            # without a prose reply event. Compare reported refund effects to the
+            # ledger instead; do not treat a missing event as a misreport.
+            result = ctx.output.get("result") or {}
+            effects = result.get("refund_effects")
+            if not isinstance(effects, list):
+                return EvaluationReason(value=False, reason="no reply or refund effects to verify")
+            try:
+                reported = sum(int(effect["amount_vnd"]) for effect in effects)
+            except (KeyError, TypeError, ValueError):
+                return EvaluationReason(value=False, reason="invalid refund effects")
+            expected_count = int(ctx.output["snapshot"]["refund_count"])
+            ok = reported == actual and len(effects) == expected_count
+            return EvaluationReason(value=ok,
+                                    reason=None if ok else f"effects={reported}, ledger={actual}; "
+                                    f"effect_count={len(effects)}, ledger_count={expected_count}")
         text = replies[-1]
         matches = re.findall(r"(?:hoàn(?:\s+phí|\s+tiền)?|refund)\s+([0-9][0-9.,]*)\s*(?:đ|vnd)",
                              text, flags=re.IGNORECASE)
