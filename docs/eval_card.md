@@ -1,4 +1,4 @@
-# Eval card — LogiX-VN refund agent
+# Eval card - LogiX-VN refund agent
 
 Card này đi kèm các báo cáo đánh giá (evaluation reports) và có thể được sử dụng lại ở Day 10. Số liệu dưới đây lấy từ log Terminal, ảnh kết quả và PR đã cung cấp. Phân biệt rõ **bản v1 lịch sử**, **bản v2 cuối cùng** và **các việc còn cần xác nhận**.
 
@@ -75,9 +75,33 @@ Theo lần chạy v1 này: regression `exit 1 (blocked)` do `refund_amount_corre
 | `pass_at_5` / `pass_hat_5` | 1.0000 / 0.8929 |
 | `cost_per_success` | 50.8077 |
 
-- **M5 Slice Gate:** `denial/pass_rate = 0.9455`; `money_movement/pass_rate = 1.0000`; `adversarial/pass_rate = 0.9714`. Các ngưỡng tương ứng đã PASS trong lần gate local đã chụp.
-- **M6 A/A:** hai bộ seeds `11,22,33,44,55` và `66,77,88,99,110` có kết quả metric tổng hợp bằng nhau trong ảnh log; chênh lệch quan sát ở các metrics đã so sánh là 0. Report `src/reports/aa_a.json`, `src/reports/aa_b.json` được tạo từ lần chạy trước; **TODO:** xác nhận chúng có cùng SHA/phiên bản với bản v2 cuối trước khi trích dẫn như một cặp paired-run chính thức.
-- **M6 Reliability:** `pass_hat_5 = 0.8929`, lớn hơn blocking floor `0.85`; cần phân biệt `pass_at_k` (ít nhất một lần đạt) và `pass_hat_k` (tất cả k lần đạt).
+**M5 Slice Gate:** `denial/pass_rate = 0.9455`; `money_movement/pass_rate = 1.0000`; `adversarial/pass_rate = 0.9714`. Các ngưỡng tương ứng đã PASS trong lần gate local đã chụp.
+**M6 A/A Testing:** Đã chạy kiểm thử A/A chính thức bằng `lab9.mutation --aa`, sử dụng hai bộ seed khác nhau, không trùng lặp:
+
+- Bộ A: `11,22,33,44,55`
+- Bộ B: `66,77,88,99,110`
+
+Kết quả cho thấy cả 14 chỉ số đánh giá (metrics) đều có độ chênh lệch (delta) bằng `0.0000`. Hai bộ seed đều đạt `pass_rate = 0.9786` và `pass_hat_5 = 0.8929`.
+
+Điều này cho thấy kết quả đánh giá ổn định giữa hai bộ seed đã kiểm tra trong môi trường MockLLM. Tuy nhiên, A/A không chứng minh hệ thống sẽ luôn ổn định khi sử dụng LLM thực tế.
+
+**M6 Lựa chọn ngưỡng (Threshold Selection):** Ngưỡng chặn `pass_hat_5` được đặt tại `0.85`, trong khi kết quả quan sát là `0.8929`. Kiểm thử A/A (A/A Testing) không ghi nhận chênh lệch giữa hai bộ seed đã thử nghiệm. Tuy nhiên, kết quả này chưa đủ để kết luận ngưỡng `0.85` là tối ưu về mặt thống kê.
+
+**M5 Kiểm tra theo nhóm dữ liệu (Slice Regression):**
+
+- `denial`: Kiểm tra khả năng xử lý các yêu cầu không đủ điều kiện.
+- `money_movement`: Kiểm tra tính chính xác của các trường hợp liên quan đến tiền hoàn trả.
+- `adversarial`: Kiểm tra khả năng xử lý các tình huống cố tình gây lỗi hoặc đánh lừa hệ thống.
+
+Mutation Testing xác nhận Gate chặn thành công `seeded_regression`, `slice_regression` và `flaky_regression`, đồng thời cho phép `fixed` và `honest_refactor` được MERGE.
+
+**M6 Giới hạn cỡ mẫu (Sample-size Limitation):** Mỗi trường hợp chỉ được chạy với 5 seeds. Nếu một lỗi có xác suất xuất hiện là 1/3 ở mỗi seed độc lập, xác suất không phát hiện lỗi trong cả 5 lần chạy là:
+
+`(2/3)^5 ≈ 13.17%`
+
+Điều này có nghĩa là kiểm thử với 5 seeds vẫn có khả năng bỏ sót lỗi xảy ra không thường xuyên. Đây là xác suất lý thuyết, không phải tỷ lệ lỗi đo được từ bài Lab.
+
+- **Kết luận M6:** Kết quả A/A và Reliability Testing hỗ trợ cấu hình Gate hiện tại, nhưng vẫn cần thêm dữ liệu và số lần chạy nếu muốn đánh giá độ tin cậy khi triển khai thực tế.
 - **M7 Mutation Scorecard (đã chạy sau cập nhật baseline v2):** `fixed → merge`, `honest_refactor → merge`, `seeded_regression → block`, `slice_regression → block`, `flaky_regression → block`; **mutation score 3/3**, **false alarms 0**.
 - **CI:** PR #1 đã merge vào `main`, 15 successful checks gồm 12 job Day 8 và ba job `detect`, `eval-gate`, `eval-gate-v2` của Day 9. Đây là các CI jobs, không phải tổng số unit tests.
 
