@@ -2,7 +2,7 @@
 
 Card này đi kèm các báo cáo đánh giá (evaluation reports) và có thể được sử dụng lại ở Day 10. Số liệu dưới đây lấy từ log Terminal, ảnh kết quả và PR đã cung cấp. Phân biệt rõ **bản v1 lịch sử**, **bản v2 cuối cùng** và **các việc còn cần xác nhận**.
 
-- **Repository / CI evidence:** [Fork `main`](https://github.com/ArthurTheMana/K5-Day9-Evaluation-and-Failure-Analysis) · [PR #1 đã merge](https://github.com/ArthurTheMana/K5-Day9-Evaluation-and-Failure-Analysis/pull/1) · [GitHub Checks: 15/15 PASS](https://github.com/ArthurTheMana/K5-Day9-Evaluation-and-Failure-Analysis/pull/1/checks).
+- **Repository / CI evidence:** [Fork `main`](https://github.com/ArthurTheMana/K5-L3B-DAY09-NguyenTaiMinhHuy-2A202603828-EvaluationandFailureAnalysis) · [PR #1 đã merge](https://github.com/ArthurTheMana/K5-L3B-DAY09-NguyenTaiMinhHuy-2A202603828-EvaluationandFailureAnalysis/pull/1) · [GitHub Checks: 15/15 PASS](https://github.com/ArthurTheMana/K5-L3B-DAY09-NguyenTaiMinhHuy-2A202603828-EvaluationandFailureAnalysis/pull/1/checks).
 - **Merge commit:** `a838e83` (theo ảnh GitHub); **TODO:** xác nhận full SHA bằng `git rev-parse HEAD` trên `main` sau khi pull.
 - **Định dạng môi trường:** đánh giá bằng `MockLLM`, dữ liệu mô phỏng; CI trên Ubuntu, Windows, macOS (Python 3.11 và 3.13 cho Day 8).
 - **Lưu ý hash:** `eval_set_sha` dùng SHA-256 trực tiếp trên bytes (`sha256(path.read_bytes())[:12]`). Bản CRLF trên Windows và LF trên Linux có SHA khác nhau dù nội dung JSONL tương đương. Baseline v1/v2 đã được tái tạo để khớp LF trong CI; **không sửa SHA bằng tay**.

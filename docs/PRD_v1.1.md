@@ -1,4 +1,4 @@
-# PRD v1.1 — LogiX-VN refund agent (bổ sung phần đánh giá)
+# PRD v1.1 - LogiX-VN refund agent (bổ sung phần đánh giá)
 
 > v1.0 là PRD của Lab 8. v1.1 **không thay đổi tính năng sản phẩm**; tài liệu xác định thế nào là chạy đúng (measurable success), release gate, evidence và trách nhiệm. Mọi con số bên dưới đều được ghi theo kết quả Terminal/PR đã cung cấp; khi sử dụng trong báo cáo chính thức, đối chiếu lại JSON report đã commit.
 
@@ -76,7 +76,7 @@ Nguồn v2 cuối: `src/reports/baseline_v2.json`, run `E-swarm-20261118-30e2`, 
 
 - **Gate v1:** kiểm tra trên eval set v1 và baseline cùng SHA; `seeded_regression` bị BLOCK trong test lịch sử, `fixed` MERGE. GitHub `eval-gate` cuối đã PASS.
 - **Gate v2:** dùng `config/metric_spec_v2.yaml`, `reports/baseline_v2.json`, slices, `pass_hat_5` và M7 integrity. Mutation `3/3`, `0 false alarms`; GitHub `eval-gate-v2` PASS.
-- **CI evidence:** [PR #1 đã merge vào fork `main`](https://github.com/ArthurTheMana/K5-Day9-Evaluation-and-Failure-Analysis/pull/1), [Checks 15/15 PASS](https://github.com/ArthurTheMana/K5-Day9-Evaluation-and-Failure-Analysis/pull/1/checks), merge commit theo ảnh `a838e83`.
+- **CI evidence:** [PR #1 đã merge vào fork `main`](https://github.com/ArthurTheMana/K5-L3B-DAY09-NguyenTaiMinhHuy-2A202603828-EvaluationandFailureAnalysis/pull/1), [Checks 15/15 PASS](https://github.com/ArthurTheMana/K5-L3B-DAY09-NguyenTaiMinhHuy-2A202603828-EvaluationandFailureAnalysis/pull/1/checks), merge commit theo ảnh `a838e83`.
 - **Baseline integrity:** phải cùng eval_set_sha; GitHub đã phát hiện mismatch do CRLF/LF và sau khi tái tạo baseline từ file LF, cả `eval-gate` và `eval-gate-v2` PASS. Không được sửa baseline JSON bằng tay để ép PASS.
 - **Gate exit 1:** BLOCK merge theo policy. **TODO:** nhóm xác nhận Eval owner, Product owner và reviewer/waiver approver; ghi rõ trường hợp ngoại lệ và thời hạn, không tự miễn safety blocking metrics.
 
