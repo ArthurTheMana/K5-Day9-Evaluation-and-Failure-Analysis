@@ -1,22 +1,22 @@
-# Secrets (skeleton-lab)
+# Secrets
 .env
 .env.*
 !.env.example
 
-# Python / OS
+# Python / OS (the PowerShell setup creates src/.venv inside the repo)
 .venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .DS_Store
 
-# Lab 8 runtime output. Code lives in src/ and every command runs from src/.
+# Runtime output. Reports for grading (baseline_v1/v2, eval_fixed, eval_seeded_regression)
+# are committed with: git add -f reports/*.json
+src/reports/
+traces/
 *.sqlite
 *.sqlite-*
-traces/
 student_drop/
-src/reports/hidden_grade.json
-src/reports/bonus_hidden.json
 
-# Instructor-only hidden pack. Never push it to this repo.
+# Instructor-only hidden pack from Day 8. Never push it.
 src/eval/instructor/
