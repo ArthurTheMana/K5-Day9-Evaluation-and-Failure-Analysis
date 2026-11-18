@@ -102,7 +102,15 @@ def pass_at_k(n: int, c: int, k: int) -> float:
     """Probability that AT LEAST ONE of k trials drawn from n (c of them passing) passes.
     Unbiased estimator (Chen et al. 2021): 1 - C(n-c, k) / C(n, k). Raise ValueError if k > n."""
     # TODO M6
-    raise NotImplementedError
+    from math import comb
+
+    if any(isinstance(x, bool) or not isinstance(x, int) for x in (n, c, k)):
+        raise ValueError("n, c, and k must be integers")
+    if n <= 0 or not (0 <= c <= n) or not (1 <= k <= n):
+        raise ValueError("require n > 0, 0 <= c <= n, and 1 <= k <= n")
+    if n - c < k:
+        return 1.0
+    return 1.0 - comb(n - c, k) / comb(n, k)
 
 
 def pass_hat_k(n: int, c: int, k: int) -> float:
@@ -110,4 +118,12 @@ def pass_hat_k(n: int, c: int, k: int) -> float:
     Unbiased estimator: C(c, k) / C(n, k). Raise ValueError if k > n.
     pass^k <= pass@1 <= pass@k; a reliable agent keeps pass^k close to pass@1."""
     # TODO M6
-    raise NotImplementedError
+    from math import comb
+
+    if any(isinstance(x, bool) or not isinstance(x, int) for x in (n, c, k)):
+        raise ValueError("n, c, and k must be integers")
+    if n <= 0 or not (0 <= c <= n) or not (1 <= k <= n):
+        raise ValueError("require n > 0, 0 <= c <= n, and 1 <= k <= n")
+    if c < k:
+        return 0.0
+    return comb(c, k) / comb(n, k)
